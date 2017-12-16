@@ -10,3 +10,6 @@ How to use:
 ```
 python shooter.py <filename> <delay in seconds>
 ```
+
+NOTE: Changes may or may not happen without warning.
+This is supposed to be a golfing language, so changes i see needed after a special challenge, can be implemented.
