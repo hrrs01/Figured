@@ -77,13 +77,13 @@ class Shoot:
 		x["d"] = "w"
 	
 	def special_reflector_down(self, x):
-		if x["v"] > 0:
+		if x["v"] == self.variables[self.shooter_index]:
 			x["d"] = "n"
 		else:
 			x["d"] = "s"
 	
 	def special_reflector_right(self, x):
-		if x["v"] > 0:
+		if x["v"] == self.variables[self.shooter_index]:
 			x["d"] = "w"
 		else:
 			x["d"] = "e"
