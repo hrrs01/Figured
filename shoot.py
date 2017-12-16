@@ -9,12 +9,12 @@ class Shoot:
 	
 	def __init__(self):
 		
-		self.basic_commands = {"<": self.left, ">": self.right, "^": self.shoot}
+		self.basic_commands = {"<": self.left, ">": self.right, "^": self.shoot, ".": self.idle}
 	
 		self.grid = []
 		self.grid_show = []
-		self.reflectors = {">": self.reflector_right, "<": self.reflector_left, "V": self.reflector_down, "^": self.reflector_up, "H": self.special_reflector_down, "Z": self.special_reflector_right, "/": self.reflector_nw, "\\": self.reflector_ne}
-		self.targets = {"+": self.add, "-": self.sub, ":": self.divide, "*": self.multiply, "O": self.output, "I": self.input}
+		self.reflectors = {"H": self.special_reflector_down, "Z": self.special_reflector_right, "/": self.reflector_nw, "\\": self.reflector_ne}
+		self.targets = {">": self.left, "<": self.right, "^": self.shoot,"+": self.add, "-": self.sub, ":": self.divide, "*": self.multiply, "O": self.output, "I": self.input, "A": self.new_variable, "Ø": self.flush}
 		
 		self.basic = ""
 		
@@ -24,6 +24,8 @@ class Shoot:
 		
 		self.shooter_index = 0
 		self.variables = []
+		
+		self.extra_basic = ""
 		
 		self.divider = "|"
 		
@@ -48,19 +50,29 @@ class Shoot:
 	def output(self, x):
 		self.outputstream += chr(x["v"])
 	
-	def input(self, x):
-		x["v"] = ord(input())
+	def flush(self,x):
+		self.outputsteam = ""
 	
-	# Basic Commands
-	def left(self):
+	
+	def input(self, x):
+		x["v"] = ord(input()[0])
+	
+	def new_variable(self, x):
+		self.variables.append(x["v"])
+		for i,x in enumerate(self.grid):
+			x.append(self.grid[i][self.shooter_index])
+	
+	# Basic Commands / targets
+	def left(self, x):
 		if self.shooter_index > 0:
 			self.shooter_index -= 1
 	
-	def right(self):
+	def right(self, x):
 		if self.shooter_index < len(self.variables)-1:
 			self.shooter_index += 1
 	
-	
+	def idle(self):
+		pass
 		
 	# Reflectors
 	def reflector_right(self, x):
@@ -127,14 +139,23 @@ class Shoot:
 		for x in self.grid:
 			while len(x) < len(self.variables):
 				x.append(".")
+			
+			while len(x) > len(self.variables):
+				x.pop()
 	
 	def update_variables(self, v):
-		self.variables = [int(x) for x in v.split("|")]
+		self.variables = [x for x in v.split("|") if x is not ""]
+		for i,x in enumerate(self.variables):
+			if x.isalpha():
+				self.variables[i] = ord(x)
+			else:
+				self.variables[i] = int(x)
+				
 	
 	
 	# Gunner
 	
-	def shoot(self):
+	def shoot(self, x):
 		self.bullets.append({"d": "n", "x": self.shooter_index, "y": len(self.grid), "v": int(self.variables[self.shooter_index])})
 	
 	
@@ -168,12 +189,14 @@ class Shoot:
 					if z["x"] < len(self.variables)-1:
 						z["x"] += 1
 					else:
-						z["d"] = "w"
+						self.bullets.remove(z)
+						continue
 				elif z["d"] == "w":
 					if z["x"] > 0:
 						z["x"] -= 1
 					else:
-						z["d"] = "e"
+						self.bullets.remove(z)
+						continue
 			
 				if self.grid[z["y"]][z["x"]] in self.reflectors:
 					self.reflectors[self.grid[z["y"]][z["x"]]](z)
@@ -204,7 +227,7 @@ class Shoot:
 		
 		for x in self.basic:
 			
-			self.basic_commands[x]()
+			self.basic_commands[x](x)
 			
 			self.calc()
 			
