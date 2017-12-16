@@ -13,7 +13,7 @@ class Shoot:
 	
 		self.grid = []
 		self.grid_show = []
-		self.reflectors = {"H": self.special_reflector_down, "Z": self.special_reflector_right, "/": self.reflector_nw, "\\": self.reflector_ne}
+		self.reflectors = {"H": self.special_reflector_down, "Z": self.special_reflector_right, "/": self.reflector_nw, "\\": self.reflector_ne, "V": self.reflector_down}
 		self.targets = {">": self.left, "<": self.right, "^": self.shoot,"+": self.add, "-": self.sub, ":": self.divide, "*": self.multiply, "O": self.output, "I": self.input, "A": self.new_variable, "Ø": self.flush}
 		
 		self.basic = ""
