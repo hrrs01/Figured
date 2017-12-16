@@ -14,7 +14,7 @@ class Shoot:
 		self.grid = []
 		self.grid_show = []
 		self.reflectors = {"H": self.special_reflector_down, "Z": self.special_reflector_right, "/": self.reflector_nw, "\\": self.reflector_ne, "V": self.reflector_down}
-		self.targets = {">": self.left, "<": self.right, "^": self.shoot,"+": self.add, "-": self.sub, ":": self.divide, "*": self.multiply, "O": self.output, "I": self.input, "A": self.new_variable, "Ø": self.flush}
+		self.targets = {"%": self.modulo,">": self.left, "<": self.right, "^": self.shoot,"+": self.add, "-": self.sub, ":": self.divide, "*": self.multiply, "O": self.output, "I": self.input, "A": self.new_variable, "Ø": self.flush}
 		
 		self.basic = ""
 		
@@ -25,7 +25,7 @@ class Shoot:
 		self.shooter_index = 0
 		self.variables = []
 		
-		self.extra_basic = ""
+		
 		
 		self.divider = "|"
 		
@@ -53,6 +53,8 @@ class Shoot:
 	def flush(self,x):
 		self.outputsteam = ""
 	
+	def modulo(self,x):
+		x["v"] %= self.variables[self.shooter_index]
 	
 	def input(self, x):
 		x["v"] = ord(input()[0])
@@ -125,7 +127,7 @@ class Shoot:
 		self.file = open(sys.argv[1], "r")
 		temp = self.file.read()
 		temp = re.sub(r'\#.*\#', "", temp)
-		temp2 = temp.split("X")
+		temp2 = temp.split("_")
 		self.update_variables(temp2[1])
 		self.update_grid(temp2[0])
 		self.basic = temp2[2]
